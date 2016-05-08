@@ -1161,7 +1161,7 @@ var characterArray = [
 		coords: [13.5,1.5],
 		dir: "down",
 		action: function () {
-			c = this;
+			var c = this;
 			speechSequence.run = [
 				function() {
 					say(c, "I'm very good at multitasking!");

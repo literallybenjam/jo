@@ -1,33 +1,33 @@
 /* To Do:
 Visual:
 ~	Textures
+	-	Bridge textures, esp. Bridge wall
 ≈	More characters
 ~	Finish map
-	Boat
-	Attacking animations
+	=	Castle
+		Boat
+-	Attacking animations
 ~	Particles (Ducks! Fishes!)
 -	Flowers?!
 	3DS Virtual Console-esque "View at original size with cool graphic"
-?	Cutscenes
 -	Title Screen (with instructions!)
 -	Piy - "Tao says the craziest things, sometimes…" Tao - "Piy thinks that some of my ideas sound crazy…" "…but usually, I'm right."
 -	<img> Inventory?
--	Bridge textures, esp. Bridge wall
 
 Mechanical:
--	Enemy support
--	$$$ / Drops
--	Particle "touch"
-	Butterfly-based luck (More butterflies -> better chance of drops? Or more drops? Or better stats?)
+=	Enemy support
+=	$$$ / Drops
+-	Butterfly-based luck (More butterflies -> better chance of drops? Or more drops? Or better stats?)
 	Touch screen UI (title.addEventListener('touchstart', initTouchInterface, false);)
 	Local spritesheet support
 	Save/Load
 	In-game manual (as an overlay)
 ?	Secondary Inventory screen (story-specific/outfits)? A/S to switch btwn?
 ?	Q-menu W-Fullscreen
+?	Particle constructors and prototype Particle.step
+=	Ensure proper rounding at the ends of characterArray[n].path
 */
 
-var timeoutID;
 var next = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame;
 
 var overworld = document.getElementById("overworld");
@@ -130,6 +130,13 @@ var walkMap = new Array();
 
 var localCharacterList = new Array;
 
+function s(n) {
+	var r;
+	if (n >= 0) r = 1;
+	else r = -1;
+	return r;
+}
+
 function generateWalkMap(m,n) {
 	var tmap = new Array();
 	var t;
@@ -192,6 +199,7 @@ function insideNPC(c,g) {
 function walkable(i,c,g) {
 	var r = 1;
 	var p = null;
+	if (!g) g = [characterArray[0].gCoords[0], characterArray[0].gCoords[1]];
 	for (var m=-1; m<2; m++) {
 		for (var n=-1; n<2; n++) {
 			if (i !== null) p = insideNPC([c[0] + m*.375, c[1] + n*.4375], g);
@@ -204,7 +212,7 @@ function walkable(i,c,g) {
 function moveCharacter(n,dx,dy) {
 	if (!walkable(n, [characterArray[n].coords[0]+dx/16, characterArray[n].coords[1]+dy/16], characterArray[n].gCoords)) {
 		if (!walkable(n, [characterArray[n].coords[0]+dx/16, characterArray[n].coords[1]], characterArray[n].gCoords)) dx = 0;
-		if (!walkable(n, [characterArray[n].coords[0], characterArray[n].coords[1]+dy/16], characterArray[n].gCoords)) dy = 0;
+		if (!walkable(n, [characterArray[n].coords[0], characterArray[n].coords[1]+dy/16], characterArray[n].gCoords) || dx) dy = 0;
 	}
 	characterArray[n].coords[0] += dx/16;
 	characterArray[n].coords[1] += dy/16;
@@ -255,7 +263,7 @@ function direction(dx,dy) {
 	if (mx > my && dx < 0) r = "left";
 	else if (mx > my && dx > 0) r = "right";
 	else if (mx <= my && dy < 0) r = "up";
-	else if (mx <= my && dy > 0) r = "down";
+	else if (mx <= my && dy > 0 || (!dx && !dy)) r = "down";
 	return r;
 }
 
@@ -295,7 +303,7 @@ function generateParticles() {
 	var pCoords;
 	for (var i=0; i<640; i++) {
 		pCoords = [(i%32)/2,Math.floor(i/32)/2];
-		if ((Math.random()<.0625 && structureMap[characterArray[0].gCoords[0]][characterArray[0].gCoords[1]][Math.floor(pCoords[0]) + Math.floor(pCoords[1]) * 16] === 0x0D) || (tileMap[characterArray[0].gCoords[0]][characterArray[0].gCoords[1]][Math.floor(pCoords[0]) + Math.floor(pCoords[1]) * 16] === 0x01 && Math.random()<.00390625 && walkable(null, pCoords, characterArray[0].gCoords))) {
+		if ((Math.random()<.0625 && structureMap[characterArray[0].gCoords[0]][characterArray[0].gCoords[1]][Math.floor(pCoords[0]) + Math.floor(pCoords[1]) * 16] === 0x0D) || (tileMap[characterArray[0].gCoords[0]][characterArray[0].gCoords[1]][Math.floor(pCoords[0]) + Math.floor(pCoords[1]) * 16] === 0x01 && Math.random()<.00390625 && walkable(null, pCoords))) {
 			particle[particle.length] = {
 				type: "butterfly",
 				anim: Math.floor(Math.random()*2),
@@ -311,7 +319,7 @@ function generateParticles() {
 function particleStep(n) {
 	switch (particle[n].type) {
 		case "boomerang":
-			if (!walkable(0, [particle[n].coords[0] += particle[n].dir[0]/16, particle[n].coords[1] += particle[n].dir[1]/16], characterArray[0].gCoords) || particle[n].coords[0] > 16.5 || particle[n].coords[0] < -0.5 || particle[n].coords[1] > 10.5 || particle[n].coords[1] < -0.5) particle.splice(n,1);
+			if (!walkable(0, [particle[n].coords[0] += particle[n].dir[0]/16, particle[n].coords[1] += particle[n].dir[1]/16]) || particle[n].coords[0] > 16.5 || particle[n].coords[0] < -0.5 || particle[n].coords[1] > 10.5 || particle[n].coords[1] < -0.5) particle.splice(n,1);
 			else {
 				particle[n].timer++;
 				if (particle[n].timer >= 5) {
@@ -323,7 +331,7 @@ function particleStep(n) {
 			break;
 
 		case "butterfly":
-			if (walkable(null, [particle[n].coords[0]+particle[n].dir[0]/16, particle[n].coords[1]+particle[n].dir[1]/16], characterArray[0].gCoords)) {
+			if (walkable(null, [particle[n].coords[0]+particle[n].dir[0]/16, particle[n].coords[1]+particle[n].dir[1]/16])) {
 				particle[n].coords[0] += particle[n].dir[0]/16;
 				particle[n].coords[1] += particle[n].dir[1]/16;
 			}
@@ -344,35 +352,7 @@ function checkParticle(n) {
 	return r;
 }
 
-/* Enemy Attributes:
-	sprite = Enemy sprite;
-	health = Enemy health (current);
-	anim = Animation frame;
-	timer = Animation timer;
-	dir = Sprite direction;
-	coords = Local coordinates;
-	Prototype:
-		step = Step function;
-		touch = Touch function;
-*/
-
-Enemy = {};
-
-Enemy["daoōs"] = function(c) {
-	this.sprite = "daoōs";
-	this.health = 3;
-	this.anim = 0;
-	this.timer = 0;
-	this.dir = "down";
-	this.coords = c;
-}
-Enemy["daoōs"].prototype = {
-	step: function() {
-	},
-	touch: function() {
-		adjustPlayerHealth(-1);
-	}
-}
+enemy = [];
 
 function focus() {
 	var f;
@@ -471,7 +451,7 @@ function useItem (m) {
 					timer: 0,
 					coords: [characterArray[0].coords[0],characterArray[0].coords[1]],
 					sprite: "boomerang",
-					d: -1
+					d: -3
 				}
 				if (characterArray[0].dir === "down") particle[n].dir = [0,1];
 				else if (characterArray[0].dir === "left") particle[n].dir = [-1,0];
@@ -517,6 +497,7 @@ function setGlobalPosition(g) {
 	characterArray[0].gCoords = g;
 	generateCharacterList(g);
 	generateParticles();
+	generateEnemies();
 }
 
 function teleport(dx,dy) {
@@ -569,10 +550,10 @@ function gameOver() {
 	speechSequence.run = [
 		function() {
 			say(characterArray[0], "Game Over");
-		}
+		},
 		function() {
 			// confirm(characterAray[0], "Retry?");
-		}
+		},
 		function() {
 			// reload();
 		}
@@ -624,7 +605,10 @@ function logic() {
 	for (var i=0; i<particle.length; i++) {
 		particleStep(i);
 	}
-	timeoutID = window.setTimeout(logic,50/3);
+	for (var i=0; i<enemy.length; i++) {
+		enemy[i].step();
+	}
+	window.setTimeout(logic,50/3);
 }
 
 function render() {
@@ -638,6 +622,18 @@ function render() {
 			spriteLoader.data[j*4+3] = 0xFF;
 		}
 		context.putImageData(spriteLoader,16*(i%16),16*Math.floor(i/16));
+	}
+	for (var i=0; i<enemy.length; i++) {
+		spriteLoader = context.getImageData(Math.floor(16 * (enemy[i].coords[0] - 1/2)), Math.floor(16 * (enemy[i].coords[1] - 1/2)),16,16);
+		for (var j=0; j<0x100; j++) {
+			if (enemySprite[enemy[i].sprite][direction(enemy[i].dir[0],enemy[i].dir[1])][enemy[i].anim][j]) {
+				spriteLoader.data[j*4] = color[enemySprite[enemy[i].sprite][direction(enemy[i].dir[0],enemy[i].dir[1])][enemy[i].anim][j]][0];
+				spriteLoader.data[j*4+1] = color[enemySprite[enemy[i].sprite][direction(enemy[i].dir[0],enemy[i].dir[1])][enemy[i].anim][j]][1];
+				spriteLoader.data[j*4+2] = color[enemySprite[enemy[i].sprite][direction(enemy[i].dir[0],enemy[i].dir[1])][enemy[i].anim][j]][2];
+				spriteLoader.data[j*4+3] = 0xFF;
+			}
+		}
+		context.putImageData(spriteLoader, Math.floor(16 * (enemy[i].coords[0] - .5)), Math.floor(16 * (enemy[i].coords[1] - .5)));
 	}
 	for (var i=0; i<localCharacterList[characterArray[0].gCoords[0]][characterArray[0].gCoords[1]].length; i++) {
 		spriteLoader = context.getImageData(Math.floor(16 * (characterArray[localCharacterList[characterArray[0].gCoords[0]][characterArray[0].gCoords[1]][i]].coords[0] - 1/2)), Math.floor(16 * (characterArray[localCharacterList[characterArray[0].gCoords[0]][characterArray[0].gCoords[1]][i]].coords[1] - 1/2)), 16, 16);

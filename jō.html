@@ -5,32 +5,9 @@
 	<meta charset="UTF-8">
 <head>
 <body>
-	<!-- Jō 0.4 - "Speech"
+	<!-- Jō 0.4 - "The friend of my friend"
 		New:
-			Made screenshot open in new window/tab and removed the download attribute
-			New/updated textures
-			Added Cobble roads
-			Removed map and video elements
-			Beds and Sleep
-			Changed coordinates of focus point (moved slightly closer)
-			Redid function teleport()
-			Money
-			Separated dx and dy
-			Implemented character step functions & consolidated player code into function characterArray[0].step
-			Expanded walkable() to be relative, so that characters run into Player/each other
-			Allowed butterflies to appear and fly over NPC's using walkable(null…)
-			Implemented character movement using linear paths
-			Added data-equip to allow for unequippable items
-			New item: Token
-			New/updated sprites and more characters
-			Redid speech system, replaced afterText() with a more flexible speechSequence
-			Added speech bubbles
-			Allowed for NPC and particle calculations when darken.dataset.state = "in"
-			Integrated pause with speechSequence
-			Added k.z() and k.x() for auto k.Z/k.X = false;
-			Customizable name
-			Redid receive() (speechSequence compatibility) and implemented hasItem()
-			Redid gameOver() for speechSequence compatibility
+			Enemy support
 
 		Issues:
 			Chrome is blurry and Safari has visual noise (poor crisp-edges support)
@@ -422,5 +399,6 @@
 	<script src="scripts/textures.js" type="text/javascript"></script>
 	<script src="scripts/maps.js" type="text/javascript"></script>
 	<script src="scripts/characters.js" type="text/javascript"></script>
+	<script src="scripts/enemies.js" type="text/javascript"></script>
 	<script src="scripts/script.js" type="text/javascript"></script>
 </body>
