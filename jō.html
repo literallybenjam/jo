@@ -5,95 +5,123 @@
 	<meta charset="UTF-8">
 <head>
 <body>
-	<!-- Jō 0.3 - "Friend or Enemy?"
+	<!-- Jō 0.4 - "Speech"
 		New:
-			New character mechanics
-			Player now considered a character; var global replaced with player's global coords
-			Chests use character mechanics
-			Preliminary HUD with Player health support through <meter>
-			Detached items from inventory
-			F - new fullscreen key
-			Fixed Webkit CSS transitions
-			Fixed item sprites for Safari
-			"Screenshot" added to menu
-			Redid "walkable" code (including insideNPC code and the localCharacterList and walkMap arrays) to allow for global walkable(c,g)? checks. Simplified code for changing area, generateWalkMap now only called in init() (removed from setGlobalPosition(), assumes that tileMap and structureMap will not change)
-			Used 1rem = 1vw to implement border-width in terms of vw (not directly supported by Webkit) and allow playability on older browsers (by previously setting 1rem = 10px)
-			Shortened transitions from .75s to .5s
-			Implemented function afterText() to allow multi-page text, post receive() text/code, etc.
-			Implemented var pause
-			Changed #text[data-state="out"] to 20rem (assumes text.innerHTML = "" when text.dataset.state = "out";
+			Made screenshot open in new window/tab and removed the download attribute
+			New/updated textures
+			Added Cobble roads
+			Removed map and video elements
+			Beds and Sleep
+			Changed coordinates of focus point (moved slightly closer)
+			Redid function teleport()
+			Money
+			Separated dx and dy
+			Implemented character step functions & consolidated player code into function characterArray[0].step
+			Expanded walkable() to be relative, so that characters run into Player/each other
+			Allowed butterflies to appear and fly over NPC's using walkable(null…)
+			Implemented character movement using linear paths
+			Added data-equip to allow for unequippable items
+			New item: Token
+			New/updated sprites and more characters
+			Redid speech system, replaced afterText() with a more flexible speechSequence
+			Added speech bubbles
+			Allowed for NPC and particle calculations when darken.dataset.state = "in"
+			Integrated pause with speechSequence
+			Added k.z() and k.x() for auto k.Z/k.X = false;
+			Customizable name
+			Redid receive() (speechSequence compatibility) and implemented hasItem()
+			Redid gameOver() for speechSequence compatibility
 
 		Issues:
-			Webkit browsers are blurry (no crisp-edges support)
+			Chrome is blurry and Safari has visual noise (poor crisp-edges support)
 			Opera doesn't work (no requestAnimationFrame support)
 			Weird initial CSS transition with Webkit browsers
-			Webkit doesn't support resizing (result of 1rem = 1vw hack)
+			Webkit doesn't support auto-resizing (result of 1rem = 1vw hack)
+			Aurora will set darken.dataset.state = "in" for a period of time (Aurora bug?)
+			 • Attempts to change darken.dataset.state to anything other than "in" have no effect
+			 • Running logic() via console seems to get things back in gear
 	-->
-	<div id="gameWindow">
+	<div id="preGame" style="display: inline;">
+		<p style="color: white;">Enter Your Name:</p>
+		<input id="pName" type="text" maxLength="8" value="Jō" autofocus>
+		<button id="goButton">Go!</button>
+	</div>
+	<div id="gameWindow" style="display: none;">
 		<canvas id="overworld" width="256" height="160">Canvas Required!</canvas>
 		<div id="HUD" class="overlay" data-state="out">
+			<div id="wallet"><p>Gold: <span id="money">0</span></p></div>
 			<meter id="health" min="0" max="3" low="3" optimum="3" value="3">3/3</meter>
 		</div>
 		<div id="darken" class="overlay" data-state="out"></div>
-		<div id="text" class="overlay" data-state="out"></div>
+		<div id="dialogue" data-state="out" data-h="right" data-v="up">
+			<svg id="textBox" viewBox="0 0 5 2">
+				<path d="M .5 2 l .5 -.5 l -.5 0 q -.5 0 -.5 -.5 l 0 -.5 q 0 -.5 .5 -.5 l 4 0 q .5 0 .5 .5 l 0 .5 q 0 .5 -.5 .5 l -3 0 z" />
+				<path d="M 4.5 2 l -.5 -.5 l .5 0 q .5 0 .5 -.5 l 0 -.5 q 0 -.5 -.5 -.5 l -4 0 q -.5 0 -.5 .5 l 0 .5 q 0 .5 .5 .5 l 3 0 z" />
+				<path d="M .5 0 l .5 .5 l -.5 0 q -.5 0 -.5 .5 l 0 .5 q 0 .5 .5 .5 l 4 0 q .5 0 .5 -.5 l 0 -.5 q 0 -.5 -.5 -.5 l -3 0 z" />
+				<path d="M 4.5 0 l -.5 .5 l .5 0 q .5 0 .5 .5 l 0 .5 q 0 .5 -.5 .5 l -4 0 q -.5 0 -.5 -.5 l 0 -.5 q 0 -.5 .5 -.5 l 3 0 z" />
+			</svg>
+			<div id="text">
+					<blockquote id="speech"></blockquote>
+			</div>
+		</div>
 		<div id="inventory" class="overlay" data-state="out">
 			<h1>Inventory:</h1>
 			<table>
-				<tr>
-					<td id="boomerang"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+				<tr class="equip">
+					<td id="boomerang" data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
+					<td data-equip="true"></td>
 				</tr>
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td id="token" data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
 				</tr>
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
 				</tr>
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td id="glitch"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
+					<td data-equip="false"></td>
 				</tr>
 			</table>
 		</div>
@@ -101,20 +129,20 @@
 			<div id="xSlot"></div>
 			<div id="zSlot"></div>
 		</div>
-		<canvas id="map" class="overlay" data-state="out">Canvas Still Required!</canvas>
-		<div id="video" class="overlay" data-state="out"></div>
 		<div id="menu" class="overlay" data-state="out">
 			<h1>Game Paused</h1>
-			<p><a id="save" href="data:," download="save.txt">Save (Unimplemented)</a></p>
-			<p><a id="screenshot" href="data:," download="screenshot.png">Screenshot</a></p>
+			<p><a id="save" href="data:," target="_blank" download="save.txt">Save (Unimplemented)</a></p>
+			<p><a id="screenshot" href="data:," target="_blank">Screenshot</a></p>
 			<p id="quit">Quit (Unimplemented)</p>
 		</div>
 	</div>
-	<footer><p>All elements of this game - including those of character, story, code, and images - were created by Benjamin Shoemake and are licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons 3.0 Attribution License</a>.</p></footer>
+	<footer><small>All elements of this game - including those of character, story, code, and images - were created by Benjamin Shoemake and are licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons 3.0 Attribution License</a>.</small></footer>
 	<style>
 		html {
 			font-size: 10px;
-			font-size: .9vw;
+			font-size: .8vw;
+			line-height: 1.25;
+			font-family: serif;
 		}
 		body {
 			background: black;
@@ -124,14 +152,12 @@
 			image-rendering: -webkit-optimize-contrast;
 			image-rendering: crisp-edges;
 			-ms-interpolation-mode: nearest-neighbor;
+			font-size: 1.25rem;
 		}
 		h1 {
 			font-size: 2.5rem;
 			line-height: 1;
 			margin: 1.75rem;
-		}
-		p {
-			font-size: 1.25rem;
 		}
 		table {
 			background: black;
@@ -152,23 +178,22 @@
 		td[data-equipped="z"] {
 			border: #47979F .375rem ridge;
 		}
+		td[data-equip="false"] {
+			border: black .375rem ridge;
+		}
 		tr {
+			background: #4F4F4F;
+		}
+		tr.equip {
 			background: #777;
 		}
 		[data-item="boomerang"] {
-			background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEUGRBAAK1cXS3dHl581%2BBrZAAAAAXRSTlMAQObYZgAAAERJREFUCNdjYGBgsABihhdAzDwDSPBFAImfCUDe0wYGBv5pQJ5VFJB4mQEkli5gYGCaBhTnAglZgoRUgTwGNZARGkAMAPWuC8LY74A%2FAAAAAElFTkSuQmCC') no-repeat!important;
-			background-size: contain!important;
+			background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEUGRBAAK1cXS3dHl581%2BBrZAAAAAXRSTlMAQObYZgAAAERJREFUCNdjYGBgsABihhdAzDwDSPBFAImfCUDe0wYGBv5pQJ5VFJB4mQEkli5gYGCaBhTnAglZgoRUgTwGNZARGkAMAPWuC8LY74A%2FAAAAAElFTkSuQmCC') no-repeat;
+			background-size: contain;
 		}
-		[data-item="glitch"] {
-			background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEVvcm0AAAB%2FHzkHYyOLP5erc0lHl58NHuUkAAAAAXRSTlMAQObYZgAAAE5JREFUCNdjEBQUZGBgABKCgkpKSmCGC5Dh4uKIm%2BHAwJYGZYSGpqWIQBkJgqGhoSBGWhqEkWxsbIrKEIYwBAWRGWYuLgyCQsrGxiYuLgDg%2Bxs16PdZCgAAAABJRU5ErkJggg%3D%3D') no-repeat!important;
-			background-size: contain!important;
-		}
-		blockquote {
-			padding: 2rem;
-			background: #AB7349;
-			border: #574300 medium inset;
-			text-align: justify;
-			font-size: 1.25rem;
+		[data-item="token"] {
+			background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEVVQRAAAABXQwDLw18pePbSAAAAAXRSTlMAQObYZgAAAFBJREFUCNdjYGANYGBgiP%2FKwMD4a70DA%2Fv6XxcY5Pb%2F38Igt%2FrfFoaqX6%2FfMlSv37eWofrVLyDr3%2Bq3DHL%2F9gNlV63awsC%2BatUFiDawASCjAEz0IdAWCkewAAAAAElFTkSuQmCC') no-repeat;
+			background-size: contain;
 		}
 		footer {
 			color: white;
@@ -184,7 +209,7 @@
 			-webkit-animation-delay: 3s;
 			-webkit-animation-fill-mode: forwards;
 		}
-		footer p {
+		small {
 			font-size: 1rem;
 		}
 		footer a {
@@ -214,6 +239,26 @@
 			width: 50%;
 			margin: 0 1rem;
 		}
+		#wallet {
+			position: absolute;
+			background: black;
+			border: .3rem #87372F solid;
+			color: #CBC35F;
+			padding: .1rem;
+			opacity: .75;
+			right: 64rem;
+			top: 36rem;
+		}
+		#wallet p {
+			margin: 0;
+			line-height: 1;
+			padding: .3rem;
+			border: .1rem #87372F solid;
+		}
+		#money {
+			font-weight: bold;
+			font-family: monospace;
+		}
 		#zSlot, #xSlot {
 			width: 5rem;
 			height: 5rem;
@@ -239,8 +284,9 @@
 			left: 2rem;
 			width: 77.5rem;
 			text-align: center;
+			overflow: visible;
 		}
-		#HUD[data-state="out"], #darken[data-state="out"], #items[data-state="out"] {
+		#HUD[data-state="out"], #darken[data-state="out"], #items[data-state="out"], #dialogue[data-state="out"] {
 			opacity: 0;
 		}
 		#HUD[data-state="in"], #darken[data-state="in"], #items[data-state="in"] {
@@ -253,19 +299,54 @@
 			height: 50rem;
 			background: rgba(0,0,0,.5);
 		}
+		#dialogue {
+			position: absolute;
+			transition: opacity .5s ease-in-out;
+			-webkit-transition: opacity .5s ease-in-out;
+		}
+		#dialogue[data-state="in"] {
+			opacity: .6;
+		}
+		#textBox {
+			width: 25rem;
+			height: 10rem;
+		}
+		#dialogue[data-h="right"][data-v="up"] path:first-child {opacity: 1;}
+		#dialogue[data-h="right"][data-v="up"] path:nth-child(2), #dialogue[data-h="right"][data-v="up"] path:nth-child(3), #dialogue[data-h="right"][data-v="up"] path:last-child {opacity: 0;}
+		#dialogue[data-h="left"][data-v="up"] path:nth-child(2) {opacity: 1;}
+		#dialogue[data-h="left"][data-v="up"] path:first-child, #dialogue[data-h="left"][data-v="up"] path:nth-child(3), #dialogue[data-h="left"][data-v="up"] path:last-child {opacity: 0;}
+		#dialogue[data-h="right"][data-v="down"] path:nth-child(3) {opacity: 1;}
+		#dialogue[data-h="right"][data-v="down"] path:nth-child(2), #dialogue[data-h="right"][data-v="down"] path:first-child, #dialogue[data-h="right"][data-v="down"] path:last-child {opacity: 0;}
+		#dialogue[data-h="left"][data-v="down"] path:last-child {opacity: 1;}
+		#dialogue[data-h="left"][data-v="down"] path:nth-child(2), #dialogue[data-h="left"][data-v="down"] path:nth-child(3), #dialogue[data-h="left"][data-v="down"] path:first-child {opacity: 0;}
 		#text {
-			background: rgba(203,195,95,.9);
-			left: 4rem;
-			width: 67rem;
-			max-height: 40rem;
-			padding: 2.5rem;
-			text-align: center;
+			background-size: 100% 100%;
+			position: absolute;
+			top: 0rem;
+			width: 22rem;
+			height: 5rem;
+			text-align: justify;
+			overflow-y: hidden;
+			color: white;
 		}
-		#text[data-state="out"] {
-			bottom: -20rem;
+		#dialogue[data-v="up"] #text {
+			padding: 1.25rem 1.25rem 3.75rem;
 		}
-		#text[data-state="in"] {
-			bottom: 2.5rem;
+		#dialogue[data-v="down"] #text {
+			padding: 3.75rem 1.25rem 1.25rem;
+		}
+		#speech {
+			margin: 0;
+		}
+		#speech p {
+			margin: 0;
+			quotes: "‘" "’" '“' '”';
+		}
+		#speech p::before {
+			content: '“';
+		}
+		#speech p:last-of-type::after {
+			content: '”';
 		}
 		#inventory {
 			background: #777;
@@ -294,8 +375,8 @@
 		}
 		#map {
 			background: black;
-			left: 4rem;
-			width: 72rem;
+			left: 10rem;
+			width: 60rem;
 			height: 45rem;
 		}
 		#map[data-state="out"] {
@@ -338,6 +419,8 @@
 			top: 0rem;
 		}
 	</style>
-	<script src="textures.js" type="text/javascript"></script>
-	<script src="script.js" type="text/javascript"></script>
+	<script src="scripts/textures.js" type="text/javascript"></script>
+	<script src="scripts/maps.js" type="text/javascript"></script>
+	<script src="scripts/characters.js" type="text/javascript"></script>
+	<script src="scripts/script.js" type="text/javascript"></script>
 </body>
