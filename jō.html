@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jō | BJMNS</title>
+	<meta charset="UTF-8">
+<head>
+<body>
+	<div id="gameWindow">
+		<canvas id="overworld" width="256" height="160">Canvas Required!</canvas>
+		<div id="text" class="overlay" data-state="out"></div>
+		<div id="inventory" class="overlay" data-state="out">
+			<figure><div id="xSlot"></div><figcaption>X</figcaption></figure>
+			<figure><div id="zSlot"></div><figcaption>Z</figcaption></figure>
+			<h1>Inventory</h1>
+			<table>
+				<tr>
+					<td id="boomerang"></td>
+					<td id="thrown-boomerang"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<canvas id="map" class="overlay" data-state="out">Canvas Still Required!</canvas>
+		<div id="video" class="overlay" data-state="out"></div>
+		<div id="menu" class="overlay" data-state="out">
+			<h1>Game Paused</h1>
+			<p id="save">Save (Unimplemented)</p>
+			<p id="quit">Quit (Unimplemented)</p>
+		</div>
+	</div>
+	<style>
+		body {
+			background: black;
+			overflow: hidden;
+			image-rendering: -moz-crisp-edges;
+			image-rendering: -o-crisp-edges;
+			image-rendering: -webkit-optimize-contrast;
+			image-rendering: crisp-edges;
+			-ms-interpolation-mode: nearest-neighbor;
+		}
+		table {
+			background: black;
+			border: black medium inset;
+			margin: 3vw 3.5vw;
+			width: 60vw;
+			height: 30vw;
+		}
+		td {
+			border: #4F4F4F medium dashed;
+		}
+		td[data-equipped="x"] {
+			border: #87372F medium ridge;
+		}
+		td[data-equipped="z"] {
+			border: #47979F medium ridge;
+		}
+		td, #xSlot, #zSlot {
+			background: #777;
+		}
+		[data-item="boomerang"] {
+			background: #4F4F4F url('data:image/gif;base64,R0lGODlhCAAIAKEDAAArVxdLd0eXn%2F%2F%2F%2FyH5BAEKAAMALAAAAAAIAAgAAAIQnD%2BAE6AnHIoBtXquleitAgA7') no-repeat 0% 0% / 100% 100%!important;
+		}
+		[data-item="thrown-boomerang"] {
+			background: #7F1F39 url('data:image/gif;base64,R0lGODlhCAAIAMIEAAAAAAArVxdLd0eXn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FyH5BAEKAAQALAAAAAAIAAgAAAMXSAqgsUyEx8CYpF7BlBSKF3ChFHQOFCYAOw%3D%3D') no-repeat 0% 0% / 100% 100%!important;
+		}
+		figure {
+			float: right;
+			text-align: center;
+		}
+		blockquote {
+			padding: 2em;
+			background: #AB7349;
+			border: #574300 medium inset;
+			text-align: justify;
+		}
+		#gameWindow {
+			position: absolute;
+			background: #7F1F39;
+			left: 10vw;
+			top: 2%;
+			width: 80vw;
+			height: 50vw;
+			overflow: hidden;
+		}
+		#overworld {
+			width: 100%;
+			height: 100%;
+		}
+		#zSlot, #xSlot {
+			width: 5vw;
+			height: 5vw;
+		}
+		#zSlot {
+			border: #47979F thick inset;
+		}
+		#xSlot {
+			border: #87372F thick inset;
+		}
+		.overlay {
+			position: absolute;
+			transition: right .75s ease-in-out, top .75s ease-in-out, left .75s ease-in-out, bottom .75s ease-in-out;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+		#text {
+			background: rgba(203,195,95,.9);
+			top: 2.5vw;
+			left: 4vw;
+			width: 68vw;
+			height: 10vw;
+			padding: 2vw;
+			text-align: center;
+		}
+		#text[data-state="out"] {
+			top: 60vw;
+		}
+		#text[data-state="in"] {
+			top: 33.5vw!important;
+		}
+		#inventory {
+			background: #777;
+			top: 2.5vw;
+			width: 67vw;
+			height: 40vw;
+			padding: 2.5vw;
+			border: #4F4F4F thick outset;
+		}
+		#inventory[data-state="out"] {
+			left: 84vw;
+		}
+		#inventory[data-state="in"] {
+			left: 4vw;
+		}
+		#map {
+			background: black;
+			left: 4vw;
+			width: 72vw;
+			height: 45vw;
+		}
+		#map[data-state="out"] {
+			bottom: 57.5vw;
+		}
+		#map[data-state="in"] {
+			bottom: 2.5vw;
+		}
+		#menu {
+			background: #CBC35F;
+			top: 0vw;
+			width: 12vw;
+			height: 46vw;
+			padding: 2vw;
+			text-align: center;
+		}
+		#menu p:hover {
+			color: white;
+			cursor: pointer;
+		}
+		#menu[data-state="out"] {
+			right: 80vw;
+		}
+		#menu[data-state="in"] {
+			right: 64vw;
+		}
+		#video {
+			left: 0vw;
+			width: 80vw;
+			height: 50vw;
+		}
+		#video[data-state="out"] {
+			top: 50vw;
+		}
+		#video[data-state="in"] {
+			top: 0vw;
+		}
+	</style>
+	<script src="textures.js" type="text/javascript"></script>
+	<script src="script.js" type="text/javascript"></script>
+</body>

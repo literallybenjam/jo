@@ -1,0 +1,107 @@
+0 - Plains
+00 - Blank
+01 - Grass
+02 - 
+03 - 
+04 - 
+05 - 
+06 - 
+07 - 
+08 - 
+09 - 
+0A - 
+0B - 
+0C - 
+0D - 
+0E - 
+0F - 
+
+1 - Shore
+10 - Shore-L
+11 - Shore-R
+12 - Shore-T
+13 - Shore-B
+14 - Shore-TL
+15 - Shore-TR
+16 - Shore-BL
+17 - Shore-BR
+18 - Shore-LT
+19 - Shore-RT
+1A - Shore-LB
+1B - Shore-RB
+1C - Shore-LTR
+1D - Shore-TRB
+1E - Shore-RBL
+1F - Shore-BLT
+
+2 - Water
+20 - Water
+21 - Bridge-M
+22 - Bridge-L
+23 - Bridge-R
+24 - Bridge-T
+25 - Bridge-B
+26 - 
+27 - 
+28 - 
+29 - 
+2A - 
+2B - 
+2C - 
+2D - 
+2E - 
+2F - 
+
+3 - Path
+30 - Path-H
+31 - Path-V
+32 - Path-TL
+33 - Path-TR
+34 - Path-BL
+35 - Path-BR
+36 - Path-X
+37 - Path-LTR
+38 - Path-TRB
+39 - Path-RBL
+3A - Path-BLT
+3B - Path-L
+3C - Path-R
+3D - Path-T
+3E - Path-B
+3F - 
+
+4 - Cobble
+40 - Cobble-C
+41 - Cobble-L
+42 - Cobble-R
+43 - Cobble-T
+44 - Cobble-B
+45 - Cobble-TL
+46 - Cobble-TR
+47 - Cobble-BL
+48 - Cobble-BR
+49 - Cobble-LT
+4A - Cobble-RT
+4B - Cobble-LB
+4C - Cobble-RB
+4D - 
+4E - 
+4F - 
+
+5 - House
+50 - Floor
+51 - Bed-T
+52 - Bed-B
+53 - Table-BL
+54 - Table-BM
+55 - Table-BR
+56 - Table-B-Drawer
+57 - 
+58 - 
+59 - 
+5A - 
+5B - 
+5C - 
+5D - 
+5E - 
+5F - 

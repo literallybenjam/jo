@@ -1,0 +1,125 @@
+0 - General
+00 - Empty
+01 - Tree-TL
+02 - Tree-TR
+03 - Tree-BL
+04 - Tree-BR
+05 - Fence-X
+06 - Fence-H
+07 - Fence-V
+08 - Fence-L
+09 - Fence-R
+0A - Fence-T
+0B - Fence-B
+0C - Fountain
+0D - Flowers
+0E - 
+0F - 
+
+1 - Water
+10 - Waterfall
+11 - BridgeBorder-H
+12 - BridgeBorder-V
+13 - BridgeBorder-L
+14 - BridgeBorder-R
+15 - BridgeBorder-T
+16 - BridgeBorder-B
+17 - 
+18 - 
+19 - 
+1A - 
+1B - 
+1C - 
+1D - 
+1E - 
+1F - 
+
+2 - House (Common)
+20 - House-TM
+21 - House-MM
+22 - House-BL
+23 - House-BM
+24 - House-Window
+25 - House-Door-Closed
+26 - House-BR
+27 - House-Door-Open
+28 - House-Inside-TL
+29 - House-Inside-TR
+2A - House-Inside-BL
+2B - House-Inside-BR
+2C - House-Inside-H
+2D - House-Inside-L
+2E - House-Inside-R
+2F - 
+
+3 - House (Specific)
+30 - House-H-TL
+31 - House-H-TR
+32 - House-H-ML
+33 - House-H-MR
+34 - House-V-TL
+35 - House-V-TR
+36 - House-V-MTL
+37 - House-V-MTM
+38 - House-V-MTR
+39 - House-V-MBL
+3A - House-V-MBR
+3B - 
+3C - 
+3D - 
+3E - 
+3F - 
+
+4 - House (Wall Extras)
+40 - House-IH-SmWindow
+41 - House-IH-LfWindow
+42 - House-IH-RtWindow
+43 - House-IH-LeftOpen
+44 - House-IH-RghtOpen
+45 - House-IL-SmWindow
+46 - House-IL-TpWindow
+47 - House-IL-BmWindow
+48 - House-IL-TopOpen
+49 - House-IL-BotOpen
+4A - House-IR-SmWindow
+4B - House-IR-TpWindow
+4C - House-IR-BmWindow
+4D - House-IR-TopOpen
+4E - House-IR-BotOpen
+4F - 
+
+5 - House (Furniture)
+50 - Bed (Bottom)
+51 - 
+52 - 
+53 - 
+54 - 
+55 - 
+56 - 
+57 - 
+58 - 
+59 - 
+5A - 
+5B - 
+5C - 
+5D - 
+5E - 
+5F - 
+
+6 - House (Table)
+60 - Table-TL
+61 - Table-TM
+62 - Table-TR
+63 - Table-ML
+64 - Table-MM
+65 - Table-MR
+66 - Table-T-Candle
+67 - Table-M-Book
+68 - Table-M-Paper
+69 - 
+6A - 
+6B - 
+6C - 
+6D - 
+6E - 
+6F - 

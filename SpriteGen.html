@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>SpriteGen</title>
+	<style>
+		body {
+			overflow-y: scroll;
+			background: black;
+		}
+		div {
+			margin: auto;
+		}
+		a {
+			text-decoration: none;
+			color: grey;
+			float: right;
+		}
+		a:hover {
+			color: lightgrey;
+		}
+		table {
+			table-layout: fixed;
+			border-spacing: 0;
+			overflow-x: scroll;
+			background: #DDD;
+			width: 100%;
+		}
+		td {
+			height: .5em;
+			border: 1px #999 solid;
+		}
+		td:hover {
+			background: white;
+		}
+		.c0 {
+			background: transparent;
+		}
+		.c1 {
+			background: black!important;
+		}
+		.c2 {
+			background: #4F4F4F!important;
+		}
+		.c3 {
+			background: #777!important;
+		}
+		.c4 {
+			background: white!important;
+		}
+		.c5 {
+			background: #87372F!important;
+		}
+		.c6 {
+			background: #47979F!important;
+		}
+		.c7 {
+			background: #8B3F97!important;
+		}
+		.c8 {
+			background: #076323!important;
+		}
+		.c9 {
+			background: #579F47!important;
+		}
+		.c10 {
+			background: #002B57!important;
+		}
+		.c11 {
+			background: #174B77!important;
+		}
+		.c12 {
+			background: #CBC35F!important;
+		}
+		.c13 {
+			background: #AB7349!important;
+		}
+		.c14 {
+			background: #574300!important;
+		}
+		.c15 {
+			background: #7F1F39!important;
+		}
+	</style>
+	<script>
+		var t;
+		var dim;
+		var color = 0;
+		var mouse = false;
+		var on = null;
+		var steps = [];
+		function newImage(m,n) {
+			dim = [m,n];
+			t = "";
+			for (var i=0; i<m*n; i++) {
+				if (!(i%m)) t += "<tr>";
+				t += "<td id='t"+i+"' class = 'c0' onmouseenter = 'on = "+i+";'"
+				if (!(i%4) || !(Math.floor(i/m)%4)) {
+					t += " style='";
+					if (!(i%64) && m >= 64) t += "border-left: black 8px solid;";
+					else if (!(i%16) && m >= 16) t += "border-left: black 4px solid;";
+					else if (!(i%4) && m >= 4) t += "border-left: black 2px solid;";
+					if (!(Math.floor(i/m)%48) && n >= 48) t += "border-top: black 8px solid;";
+					else if (!(Math.floor(i/m)%16) && n >= 16) t += "border-top: black 4px solid;";
+					else if (!(Math.floor(i/m)%4) && n >= 4) t += "border-top: black 2px solid;";
+					t += "'";
+				}
+				t += "></td>";
+				if (i%m === m-1) t += "</tr>";
+			}
+			document.body.innerHTML = "<div style='width: calc("+m*.5+"em + "+m*3.25+"px);'><select id='color'><option value='0'>Transparent</option><option value='1'>Black</option><option value='2'>Dark Grey</option><option value='3'>Grey</option><option value='4'>White</option><option value='5'>Red</option><option value='6'>Cyan</option><option value='7'>Purple</option><option value='8'>Forest Green</option><option value='9'>Green</option><option value='10'>Deep Blue</option><option value='11'>Blue</option><option value='12'>Yellow</option><option value='13'>Orange</option><option value='14'>Brown</option><option value='15'>Rose</option></select> <a id='exporter' href='data:,' onclick='exportImage();' target='_blank'>Export</a><table onmouseout='on = null;' id='tablee'>"+t+"</table></div>";
+			document.getElementById("tablee").addEventListener("dragstart", function(e) {e.preventDefault();}, false);
+		}
+		function changeColor(n) {
+			if (n !== null && document.getElementById("t"+n).getAttribute("class") !== "c" + document.getElementById("color").value) {
+					steps[steps.length] = [n,document.getElementById("t"+n).getAttribute("class")];
+				document.getElementById("t"+n).setAttribute("class", "c" + document.getElementById("color").value);
+			}
+		}
+		function eraseColor(n) {
+			if (n !== null && document.getElementById("t"+n).getAttribute("class") !== "c0") {
+				steps[steps.length] = [n,document.getElementById("t"+n).getAttribute("class")];
+				document.getElementById("t"+n).setAttribute("class", "c" + 0);
+			}
+		}
+		function exportImage() {
+			var r = "data:,[";
+			for (var i=0; i<dim[0]*dim[1]; i++) {
+				if (!(i%dim[1]) && i !== 0) r += " ";
+				r += "0x" + Number(document.getElementById("t"+i).getAttribute("class").substr(1)).toString(16).toUpperCase();
+				if (i !== dim[0]*dim[1]-1) {
+					r += ",";
+					if (i%dim[1] === dim[1]-1) r += "%0A";
+				}
+			}
+			r += "]";
+			document.getElementById("exporter").setAttribute("href", r);
+		}
+		document.addEventListener("DOMContentLoaded", function() {newImage(16,16);}, false);
+		document.addEventListener("contextmenu", function(e) {e.preventDefault();}, false);
+		document.addEventListener("mousedown", function(e) {mouse = e.button; if(mouse === 0) changeColor(on); else if (mouse === 2) eraseColor(on);}, false);
+		document.addEventListener("mouseup", function() {mouse = false;}, false);
+		document.addEventListener("mousemove", function() {if(mouse === 0) changeColor(on); else if (mouse === 2) eraseColor(on);}, false);
+		document.addEventListener("keydown", function(e) {if (e.keyCode === 90 && steps.length) {document.getElementById("t"+steps[steps.length-1][0]).setAttribute("class", steps[steps.length-1][1]); steps.splice(steps.length-1,1);}}, false);
+	</script>
+</head>
+<body></body>
+</html>
