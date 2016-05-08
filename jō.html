@@ -5,6 +5,25 @@
 	<meta charset="UTF-8">
 <head>
 <body>
+	<!-- Jō 0.2 - "Particulars"
+		New in this version:
+			Combined "boomerang" and "thrown-boomerang"
+			Modified CSS so that Safari doesn't mess up and Chrome displays inventory table correctly
+			Added particle support
+			Added item use support
+			Updated boomerang inventory sprite to be 16x16 png instead of 8x8 gif
+			BUTTERFLIES!
+			Indoor support
+			Preliminary chest support (will be redone when new NPC mechanics are finalized)
+			Invisible Shiny Bulbasaur
+
+		Known bugs:
+			Webkit browsers are blurry (nothing I can do about this)
+			Safari doesn't display inventory sprites (doesn't support data- attribute, probably)
+			Opera doesn't work (no requestAnimationFrame support?)
+			Tab is probably not the best key for fullscreen toggle
+			Chests don't appear to be open until you reenter the room (will be fixed with new mechanics)
+	-->
 	<div id="gameWindow">
 		<canvas id="overworld" width="256" height="160">Canvas Required!</canvas>
 		<div id="text" class="overlay" data-state="out"></div>
@@ -15,35 +34,7 @@
 			<table>
 				<tr>
 					<td id="boomerang"></td>
-					<td id="thrown-boomerang"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
+					<td id="rand"></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -120,12 +111,13 @@
 		table {
 			background: black;
 			border: black medium inset;
-			margin: 3vw 3.5vw;
-			width: 60vw;
-			height: 30vw;
+			margin: 3vw auto;
+			width: 100%;
 		}
 		td {
 			border: #4F4F4F medium dashed;
+			width: 5vw;
+			height: 5vw;
 		}
 		td[data-equipped="x"] {
 			border: #87372F medium ridge;
@@ -137,10 +129,10 @@
 			background: #777;
 		}
 		[data-item="boomerang"] {
-			background: #4F4F4F url('data:image/gif;base64,R0lGODlhCAAIAKEDAAArVxdLd0eXn%2F%2F%2F%2FyH5BAEKAAMALAAAAAAIAAgAAAIQnD%2BAE6AnHIoBtXquleitAgA7') no-repeat 0% 0% / 100% 100%!important;
+			background: #4F4F4F url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEUGRBAAK1cXS3dHl581%2BBrZAAAAAXRSTlMAQObYZgAAAERJREFUCNdjYGBgsABihhdAzDwDSPBFAImfCUDe0wYGBv5pQJ5VFJB4mQEkli5gYGCaBhTnAglZgoRUgTwGNZARGkAMAPWuC8LY74A%2FAAAAAElFTkSuQmCC') no-repeat 0% 0% / 100% 100%!important;
 		}
-		[data-item="thrown-boomerang"] {
-			background: #7F1F39 url('data:image/gif;base64,R0lGODlhCAAIAMIEAAAAAAArVxdLd0eXn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FyH5BAEKAAQALAAAAAAIAAgAAAMXSAqgsUyEx8CYpF7BlBSKF3ChFHQOFCYAOw%3D%3D') no-repeat 0% 0% / 100% 100%!important;
+		[data-item="rand"] {
+			background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEVvcm0AAAB%2FHzkHYyOLP5erc0lHl58NHuUkAAAAAXRSTlMAQObYZgAAAE5JREFUCNdjEBQUZGBgABKCgkpKSmCGC5Dh4uKIm%2BHAwJYGZYSGpqWIQBkJgqGhoSBGWhqEkWxsbIrKEIYwBAWRGWYuLgyCQsrGxiYuLgDg%2Bxs16PdZCgAAAABJRU5ErkJggg%3D%3D') no-repeat 0% 0% / 100% 100%!important;
 		}
 		figure {
 			float: right;
@@ -163,7 +155,7 @@
 		}
 		#overworld {
 			width: 100%;
-			height: 100%;
+			height: 50vw;
 		}
 		#zSlot, #xSlot {
 			width: 5vw;
@@ -178,6 +170,7 @@
 		.overlay {
 			position: absolute;
 			transition: right .75s ease-in-out, top .75s ease-in-out, left .75s ease-in-out, bottom .75s ease-in-out;
+			-webkit-transition: right .75s ease-in-out, top .75s ease-in-out, left .75s ease in-out, bottom .75s ease-in-out;
 			overflow-x: hidden;
 			overflow-y: auto;
 		}
