@@ -21,22 +21,22 @@
 
 ##  10..1F Field  ##
 
-- `10` : Tree-TL
-- `11` : Tree-TR
-- `12` : Tree-BL
-- `13` : Tree-BR
-- `14` : Fence-X
-- `15` : Fence-H
-- `16` : Fence-V
-- `17` : Fence-L
-- `18` : Fence-R
-- `19` : Fence-T
-- `1A` : Fence-B
-- `1B` : Flowers
-- `1C` : [[unassigned]]
-- `1D` : [[unassigned]]
-- `1E` : [[unassigned]]
-- `1F` : [[unassigned]]
+- `10` : [[unassigned]]
+- `11` : Fence-X
+- `12` : Fence-H
+- `13` : Fence-V
+- `14` : Fence-L
+- `15` : Fence-R
+- `16` : Fence-T
+- `17` : Fence-B
+- `18` : Fence-TL
+- `19` : Fence-TR
+- `1A` : Fence-BL
+- `1B` : Fence-BR
+- `1C` : Fence-BLT
+- `1D` : Fence-TRB
+- `1E` : Fence-LTR
+- `1F` : Fence-RBL
 
 ##  20..2F Ocean  ##
 
@@ -80,7 +80,7 @@
 
 - `40` : [[unassigned]]
 - `41` : [[unassigned]]
-- `42` : [[unassigned]]
+- `42` : Bed-Sheets-L
 - `43` : [[unassigned]]
 - `44` : [[unassigned]]
 - `45` : [[unassigned]]
@@ -95,12 +95,12 @@
 - `4E` : [[unassigned]]
 - `4F` : [[unassigned]]
 
-##  50..5F  ##
+##  50..5F Forest  ##
 
-- `50` : [[unassigned]]
-- `51` : [[unassigned]]
-- `52` : [[unassigned]]
-- `53` : [[unassigned]]
+- `50` : Tree-TL
+- `51` : Tree-TR
+- `52` : Tree-BL
+- `53` : Tree-BR
 - `54` : [[unassigned]]
 - `55` : [[unassigned]]
 - `56` : [[unassigned]]
