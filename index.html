@@ -96,9 +96,9 @@
             <div id="jo" class="sprites"
                  data-sheet="characters"
                  data-box-x="8"
-                 data-box-y="8.5"
+                 data-box-y="8"
                  data-box-width="12"
-                 data-box-height="15">
+                 data-box-height="16">
                 <span class="sprite"
                       title="dn"
                       data-index="0"
@@ -167,30 +167,30 @@
                             set (frame, 0)
                     </script>
                     <script type="text/plain" class="step">
-                            (key_up) ?
-                                (key_down) ?
-                                    (key_left) ?
-                                        (key_right) ?
+                            (game.key_up) ?
+                                (game.key_down) ?
+                                    (game.key_left) ?
+                                        (game.key_right) ?
                                             targetBy (0, 0)
                                         :
                                             targetBy (-1, 0)
                                         ;
                                     :
-                                        (key_right) ?
+                                        (game.key_right) ?
                                             targetBy (1, 0)
                                         :
                                             targetBy (0, 0)
                                         ;
                                     ;
                                 :
-                                    (key_left) ?
-                                        (key_right) ?
+                                    (game.key_left) ?
+                                        (game.key_right) ?
                                             targetBy (0, -1)
                                         :
                                             targetBy (-1, -1)
                                         ;
                                     :
-                                        (key_right) ?
+                                        (game.key_right) ?
                                             targetBy (1, -1)
                                         :
                                             targetBy (0, -1)
@@ -198,29 +198,29 @@
                                     ;
                                 ;
                             :
-                                (key_down) ?
-                                    (key_left) ?
-                                        (key_right) ?
+                                (game.key_down) ?
+                                    (game.key_left) ?
+                                        (game.key_right) ?
                                             targetBy (0, 1)
                                         :
                                             targetBy (-1, 1)
                                         ;
                                     :
-                                        (key_right) ?
+                                        (game.key_right) ?
                                             targetBy (1, 1)
                                         :
                                             targetBy (0, 1)
                                         ;
                                     ;
                                 :
-                                    (key_left) ?
-                                        (key_right) ?
+                                    (game.key_left) ?
+                                        (game.key_right) ?
                                             targetBy (0, 0)
                                         :
                                             targetBy (-1, 0)
                                         ;
                                     :
-                                        (key_right) ?
+                                        (game.key_right) ?
                                             targetBy (1, 0)
                                         :
                                             targetBy (0, 0)
@@ -228,28 +228,28 @@
                                     ;
                                 ;
                             ;
-                            (key_left) ?
-                                (key_right) ?
-                                    (key_up) ?
-                                        -(key_down) set (dir, up)
+                            (game.key_left) ?
+                                (game.key_right) ?
+                                    (game.key_up) ?
+                                        -(game.key_down) set (dir, up)
                                     :
-                                        (key_down) set (dir, dn)
+                                        (game.key_down) set (dir, dn)
                                     ;
                                 :
                                     set (dir, lf)
                                 ;
                             :
-                                (key_right) ?
+                                (game.key_right) ?
                                     set (dir, rt)
                                 :
-                                    (key_up) ?
-                                        -(key_down) set (dir, up)
+                                    (game.key_up) ?
+                                        -(game.key_down) set (dir, up)
                                     :
-                                        (key_down) set (dir, dn)
+                                        (game.key_down) set (dir, dn)
                                     ;
                                 ;
                             ;
-                            (key_up)(key_down)(key_left)(key_right) ?
+                            (game.key_up)(game.key_down)(game.key_left)(game.key_right) ?
                                 mod_increment (timer, 15)
                                 -(timer) mod_increment (frame, 2)
                             ;
