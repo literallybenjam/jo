@@ -143,8 +143,120 @@
             </div>
         </section>
         <section>
+            <h2>Characters</h2>
+            <div id="player" class="character"
+                 data-sprites="jo"
+                 data-vars="timer"
+                 >
+                <script type="text/plain" class="init">
+                    x.set (88)
+                    y.set (120)
+                    dir.set (dn)
+                    frame.set (0)
+                </script>
+                <script type="text/plain" class="step">
+                    (game.key_up) ?
+                        (game.key_down) ?
+                            (game.key_left) ?
+                                (game.key_right) ?
+                                    targetBy (0, 0)
+                                :
+                                    targetBy (-1, 0)
+                                ;
+                            :
+                                (game.key_right) ?
+                                    targetBy (1, 0)
+                                :
+                                    targetBy (0, 0)
+                                ;
+                            ;
+                        :
+                            (game.key_left) ?
+                                (game.key_right) ?
+                                    targetBy (0, -1)
+                                :
+                                    targetBy (-1, -1)
+                                ;
+                            :
+                                (game.key_right) ?
+                                    targetBy (1, -1)
+                                :
+                                    targetBy (0, -1)
+                                ;
+                            ;
+                        ;
+                    :
+                        (game.key_down) ?
+                            (game.key_left) ?
+                                (game.key_right) ?
+                                    targetBy (0, 1)
+                                :
+                                    targetBy (-1, 1)
+                                ;
+                            :
+                                (game.key_right) ?
+                                    targetBy (1, 1)
+                                :
+                                    targetBy (0, 1)
+                                ;
+                            ;
+                        :
+                            (game.key_left) ?
+                                (game.key_right) ?
+                                    targetBy (0, 0)
+                                :
+                                    targetBy (-1, 0)
+                                ;
+                            :
+                                (game.key_right) ?
+                                    targetBy (1, 0)
+                                :
+                                    targetBy (0, 0)
+                                ;
+                            ;
+                        ;
+                    ;
+                    (game.key_left) ?
+                        (game.key_right) ?
+                            (game.key_up) ?
+                                -(game.key_down) dir.set (up)
+                            :
+                                (game.key_down) dir.set (dn)
+                            ;
+                        :
+                            dir.set (lf)
+                        ;
+                    :
+                        (game.key_right) ?
+                            dir.set (rt)
+                        :
+                            (game.key_up) ?
+                                -(game.key_down) dir.set (up)
+                            :
+                                (game.key_down) dir.set (dn)
+                            ;
+                        ;
+                    ;
+                    (game.key_up)(game.key_down)(game.key_left)(game.key_right) ?
+                        timer.mod_increment (15)
+                        -(timer) frame.mod_increment (2)
+                    ;
+                </script>
+            </div>
+            <div id="testsign" class="character"
+                 data-sprites="sign">
+                <script type="text/plain" class="init">
+                    set (x, 120)
+                    set (y, 120)
+                    set (dir, dn)
+                    set (frame, 0)
+                </script>
+            </div>
+        </section>
+        <section>
             <h2>Areas</h2>
             <div class="area"
+                 data-characters="player"
                  >
                 <span class="map"
                       data-tileset="tiles"
@@ -156,105 +268,6 @@
                       data-mapwidth="16"
                       data-screen="foreground"
                       >AB4AAAAAAAAAAAAAAAAAABwVAAAAAAAAAAAAAAAAAAAAExgSFhkAAAAAAAAAAAAAABQREhUTAAAAAAAAAAAAAAATGhIXGwAAAAAAAAAAAAAAFB0AAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAAAAAAAAMAAAAABQUQAAAAAAAAAAAAAAAAAAUlMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==</span>
-                <div class="character"
-                     data-sprites="jo"
-                     data-vars="timer"
-                     >
-                    <script type="text/plain" class="init">
-                            set (x, 88)
-                            set (y, 120)
-                            set (dir, dn)
-                            set (frame, 0)
-                    </script>
-                    <script type="text/plain" class="step">
-                            (game.key_up) ?
-                                (game.key_down) ?
-                                    (game.key_left) ?
-                                        (game.key_right) ?
-                                            targetBy (0, 0)
-                                        :
-                                            targetBy (-1, 0)
-                                        ;
-                                    :
-                                        (game.key_right) ?
-                                            targetBy (1, 0)
-                                        :
-                                            targetBy (0, 0)
-                                        ;
-                                    ;
-                                :
-                                    (game.key_left) ?
-                                        (game.key_right) ?
-                                            targetBy (0, -1)
-                                        :
-                                            targetBy (-1, -1)
-                                        ;
-                                    :
-                                        (game.key_right) ?
-                                            targetBy (1, -1)
-                                        :
-                                            targetBy (0, -1)
-                                        ;
-                                    ;
-                                ;
-                            :
-                                (game.key_down) ?
-                                    (game.key_left) ?
-                                        (game.key_right) ?
-                                            targetBy (0, 1)
-                                        :
-                                            targetBy (-1, 1)
-                                        ;
-                                    :
-                                        (game.key_right) ?
-                                            targetBy (1, 1)
-                                        :
-                                            targetBy (0, 1)
-                                        ;
-                                    ;
-                                :
-                                    (game.key_left) ?
-                                        (game.key_right) ?
-                                            targetBy (0, 0)
-                                        :
-                                            targetBy (-1, 0)
-                                        ;
-                                    :
-                                        (game.key_right) ?
-                                            targetBy (1, 0)
-                                        :
-                                            targetBy (0, 0)
-                                        ;
-                                    ;
-                                ;
-                            ;
-                            (game.key_left) ?
-                                (game.key_right) ?
-                                    (game.key_up) ?
-                                        -(game.key_down) set (dir, up)
-                                    :
-                                        (game.key_down) set (dir, dn)
-                                    ;
-                                :
-                                    set (dir, lf)
-                                ;
-                            :
-                                (game.key_right) ?
-                                    set (dir, rt)
-                                :
-                                    (game.key_up) ?
-                                        -(game.key_down) set (dir, up)
-                                    :
-                                        (game.key_down) set (dir, dn)
-                                    ;
-                                ;
-                            ;
-                            (game.key_up)(game.key_down)(game.key_left)(game.key_right) ?
-                                mod_increment (timer, 15)
-                                -(timer) mod_increment (frame, 2)
-                            ;
-                    </script>
-                </div>
             </div>
             <div class="area"
                  >
@@ -268,15 +281,6 @@
                       data-mapwidth="16"
                       data-screen="foreground"
                       >AAAAAAAAAAAAAAAAAAAaEgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkQAAAAAAAAAAAAAAAAAAAWEgAAAAAAAAAAAAAAAAAAFhAAAAAAAAAAAAAAAAAAABYSFRUVFRUVFRUYABcVFRUUGA==</span>
-                <div class="character"
-                     data-sprites="sign">
-                    <script type="text/plain" class="init">
-                            set (x, 120)
-                            set (y, 120)
-                            set (dir, dn)
-                            set (frame, 0)
-                    </script>
-                </div>
             </div>
         </section>
 
